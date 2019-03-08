@@ -1,0 +1,40 @@
+---
+#node service
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app
+  labels:
+    appName: node-app
+spec:
+  selector:
+    appName: node-app
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP
+---
+#node deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: node-app
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      appName: node-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        appName: node-app
+    spec:
+      containers:
+      - name: node-app
+        image: index.docker.io/xuruichen/nodejs
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
